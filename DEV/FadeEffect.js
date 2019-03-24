@@ -1,7 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import Animate from '../src';
+import { createCustomAnimation } from '../src';
 
 const FADE_PROGRESS = [
   {
@@ -14,42 +11,17 @@ const FADE_PROGRESS = [
   },
 ];
 
-export default React.memo(FadeEffect);
-
-function FadeEffect({ children, delay, maxAnimations, ...otherProps }) {
-  return (
-    <Animate
-      {...otherProps}
-      animationName="fadeIn"
-      duration={1}
-      delay={delay}
-      maxAnimations={maxAnimations}
-      keyframes={FADE_PROGRESS}
-      default={`
-            position: relative;
-            opacity: 0;
-         `}
-      startWithAnimation
-    >
-      {children}
-    </Animate>
-  );
+function parseFadeEffect(props) {
+  return {
+    ...props,
+    animationName: 'fadeIn',
+    duration: 1,
+  };
 }
 
-FadeEffect.propTypes = {
-  /**
-   * The content to be animated
-   */
-  children: PropTypes.node.isRequired,
-  /**
-   * Animation delay in seconds
-   */
-  delay: PropTypes.number,
-  /**
-   * Total of animations allow before being invalidated
-   */
-  maxAnimations: PropTypes.number,
-};
+const FadeEffect = createCustomAnimation(parseFadeEffect, FADE_PROGRESS);
+
+export default FadeEffect;
 
 FadeEffect.defaultProps = {
   delay: 0,

@@ -8,7 +8,7 @@ const PointerWrapper = styled.div`
   cursor: pointer;
 `;
 
-export default function FadeEffectApp() {
+export default function FadeEffectApp({ maxAnimations }) {
   const [hash, setHash] = useState(uuid.v4());
   const onClick = () => {
     setHash(uuid.v4());
@@ -16,9 +16,11 @@ export default function FadeEffectApp() {
 
   return (
     <PointerWrapper>
-      <FadeEffect onClick={onClick} maxAnimations={Number.MAX_VALUE}>
-        Hello! Click me "{hash}"
-      </FadeEffect>
+      <FadeEffect onClick={onClick}>Hello! Click me "{hash}"</FadeEffect>
     </PointerWrapper>
   );
 }
+
+FadeEffectApp.defaultProps = {
+  maxAnimations: Number.MAX_VALUE,
+};

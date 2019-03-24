@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useAnimateOnChange from './useAnimateOnChange';
-import useStartAnimateOnUpdate from './useStartAnimateOnUpdate';
+import uuid from 'uuid';
+import useAnimationStyle from './useAnimationStyle';
 import AnimateProxy from './AnimateProxy';
 
-const { useRef } = React;
+const { useEffect, useState } = React;
 
-export default Animate;
-
-// @example ./extra.examples.md
+export default React.memo(Animate);
 
 /**
- * Basic component to create animations
+ * Basic component to create animations/effects
  * @example ./Animate.md
  */
 function Animate(props) {
@@ -19,38 +17,37 @@ function Animate(props) {
     children,
     onComplete,
     onStart,
-    shouldAnimate,
-    startWithAnimation,
-    maxAnimations,
-    ...otherProps
+    ...otherProps,
   } = props;
-  const countAnimationRef = useRef(0);
-  const [hash, childrenContent] = useAnimateOnChange(children);
-  const [shouldAnimateOnUpdate] = useStartAnimateOnUpdate(childrenContent);
+  const { animationName } = otherProps;
+  const [style] = useAnimationStyle(props);
+  const [iteractionAnimationId, setIteractionAnimationId] = useState(uuid.v4());
+  useEffect(
+    () => {
+      setIteractionAnimationId(uuid.v4());
+    },
+    [children]
+  );
   const onCompleteAnimation = e => {
-    countAnimationRef.current += 1;
-    if (onComplete) {
+    if (e.animationName === animationName && onComplete) {
       onComplete(e);
     }
   };
-  const allowToAnimate =
-    shouldAnimate &&
-    countAnimationRef.current < maxAnimations &&
-    (startWithAnimation || shouldAnimateOnUpdate);
-
-  if (!allowToAnimate) {
-    return childrenContent;
-  }
+  const onStartAnimation = e => {
+    if (e.animationName === animationName && onStart) {
+      onStart(e);
+    }
+  };
 
   return (
     <AnimateProxy
       {...otherProps}
-      key={hash}
+      key={iteractionAnimationId}
       onAnimationEnd={onCompleteAnimation}
-      onAnimationStart={onStart}
-      shouldAnimate={allowToAnimate}
+      onAnimationStart={onStartAnimation}
+      style={style}
     >
-      {childrenContent}
+      {children}
     </AnimateProxy>
   );
 }
@@ -122,14 +119,6 @@ Animate.propTypes = {
    */
   onStart: PropTypes.func,
   /**
-   * Indicates whether the animation should be performed
-   */
-  shouldAnimate: PropTypes.bool,
-  /**
-   * Indicates whether the animation should be performed in the first rendering
-   */
-  startWithAnimation: PropTypes.bool,
-  /**
    * The target of the animation
    */
   target: PropTypes.string,
@@ -158,8 +147,6 @@ Animate.defaultProps = {
   maxAnimations: Number.MAX_VALUE,
   onComplete: null,
   onStart: null,
-  shouldAnimate: true,
-  startWithAnimation: false,
   target: '&',
   timingFunction: 'ease-in',
 };

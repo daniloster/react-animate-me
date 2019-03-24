@@ -22,7 +22,6 @@ function MovingEffect({ children }) {
       fillMode="both"
       iterationCount="infinite"
       keyframes={MOVING_PROGRESS}
-      startWithAnimation
       timingFunction="ease-in-out"
     >
       {children}

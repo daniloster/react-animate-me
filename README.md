@@ -35,9 +35,7 @@ Find below an example of how to build a FadeEffect and how to use it.
 `FadeEffect.js`
 
 ```jsx static
-import React from 'react';
-import PropTypes from 'prop-types';
-import Animate from 'react-animate-me';
+import { createCustomAnimation }from 'react-animate-me';
 
 /**
  * Here is an example of keyframes where the state represents
@@ -48,7 +46,7 @@ import Animate from 'react-animate-me';
 const FADE_PROGRESS = [
   {
     state: '0%',
-    content: 'opacity: 0;',
+    content: 'position: relative; opacity: 0;',
   },
   {
     state: '100%',
@@ -56,42 +54,17 @@ const FADE_PROGRESS = [
   },
 ];
 
-export default React.memo(FadeEffect);
-
-function FadeEffect({ children, delay, maxAnimations, ...otherProps }) {
-  return (
-    <Animate
-      {...otherProps}
-      animationName="fadeIn"
-      duration={1}
-      delay={delay}
-      maxAnimations={maxAnimations}
-      keyframes={FADE_PROGRESS}
-      default={`
-            position: relative;
-            opacity: 0;
-         `}
-      startWithAnimation
-    >
-      {children}
-    </Animate>
-  );
+function parseFadeEffect(props) {
+  return {
+    ...props,
+    animationName: 'fadeIn',
+    duration: 1,
+  };
 }
 
-FadeEffect.propTypes = {
-  /**
-   * The content to be animated
-   */
-  children: PropTypes.node.isRequired,
-  /**
-   * Animation delay in seconds
-   */
-  delay: PropTypes.number,
-  /**
-   * Total of animations allow before being invalidated
-   */
-  maxAnimations: PropTypes.number,
-};
+const FadeEffect = createCustomAnimation(parseFadeEffect, FADE_PROGRESS);
+
+export default FadeEffect;
 
 FadeEffect.defaultProps = {
   delay: 0,
@@ -154,4 +127,3 @@ render(<App />, div);
 - Changes must have tests passing on Travis-CI;
 - Changes must have coverage of 95% on Travis-CI for: statements, branches, functions and lines;
 - Last commit message must have attribute `[release=major|minor|patch|no-release]`;
-

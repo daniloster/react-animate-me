@@ -24,7 +24,6 @@ const sections = [
     content: 'README.md',
   },
 ].concat(componentSections);
-console.log('sections', sections);
 
 const node_modules = path.resolve('node_modules');
 
@@ -57,8 +56,8 @@ function handlers(componentPath) {
 module.exports = {
   ignore: [
     './README.md',
-    './src/useAnimateOnChange.js',
-    './src/useStartAnimateOnUpdate.js',
+    './src/useAnimationChangeDetection.js',
+    './src/useAnimationController.js',
     '**/*.locale.js',
     '**/*.spec.js',
     '**/mockData.test/**',
