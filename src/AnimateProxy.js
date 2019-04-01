@@ -65,8 +65,6 @@ function applyAnimation(props) {
  * `{props => getAnimationStyles({ ...props, animationName: uuid.v4() })};`
  * below will make sure the onStart and onComplete keep tracking of
  * time to be dispatched.
- *
- * @example AnimateProxy.md
  */
 const AnimateProxy = React.memo(styled.div`
   ${applyAnimation};

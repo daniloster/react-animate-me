@@ -20,7 +20,7 @@ const componentSections = [
 
 const sections = [
   {
-    name: 'Getting Started',
+    name: 'Intro',
     content: 'README.md',
   },
 ].concat(componentSections);
@@ -56,12 +56,11 @@ function handlers(componentPath) {
 module.exports = {
   ignore: [
     './README.md',
-    './src/useAnimationChangeDetection.js',
-    './src/useAnimationController.js',
     '**/*.locale.js',
     '**/*.spec.js',
     '**/mockData.test/**',
     '**/lib/**',
+    '**/test/**',
     '**/DEV/**',
     '**/demo/**',
     '**/.nyc_output/**',
@@ -73,7 +72,7 @@ module.exports = {
     node_modules,
   ],
   styleguideDir: 'docs',
-  require: ['babel-polyfill', './docs/components/loader'],
+  require: ['@babel/polyfill', './docs/components/loader'],
   // style references: https://github.com/styleguidist/react-styleguidist/blob/master/src/styles/theme.js
   theme: {
     baseBackground: '#fdfdfc',
@@ -103,8 +102,7 @@ module.exports = {
     },
   },
   styleguideComponents: {
-    LogoRenderer: path.join(__dirname, 'docs/components/Logo'),
-    StyleGuideRenderer: path.join(__dirname, 'docs/components/StyleGuide'),
+    StyleGuideRenderer: path.join(__dirname, 'docs/layout/StyleGuideRenderer'),
   },
   webpackConfig,
   resolver: require('react-docgen').resolver.findAllComponentDefinitions,
@@ -112,7 +110,6 @@ module.exports = {
   sections: sections,
   handlers: handlers,
   moduleAliases: {
-    './FadeEffect': path.resolve(__dirname, 'DEV/FadeEffect'),
     'react-animate-me': path.resolve(__dirname, 'src'),
   },
 };

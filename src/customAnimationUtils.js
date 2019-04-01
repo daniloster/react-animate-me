@@ -6,7 +6,7 @@ import Animate from './Animate';
  * Check if a component is a custom animation.
  */
 export function isNotCustomAnimation(Component) {
-  return !Component.__isCustomAnimation;
+  return !Component.__isCustomAnimation; // eslint-disable-line no-underscore-dangle
 }
 
 /**
@@ -17,7 +17,7 @@ export function isNotCustomAnimation(Component) {
  */
 export function createCustomAnimationFromParser(parser) {
   const CustomEffect = styled(props => <Animate {...parser(props)} />)``;
-  CustomEffect.__isCustomAnimation = true;
+  CustomEffect.__isCustomAnimation = true; // eslint-disable-line no-underscore-dangle
 
   return CustomEffect;
 }

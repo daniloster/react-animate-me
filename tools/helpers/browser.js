@@ -7,24 +7,35 @@ require('./babel-registration');
 process.env.TZ = 'GMT+02:00';
 
 // setup file
-var enzyme = require('enzyme');
-var Adapter = require('enzyme-adapter-react-16');
+const enzyme = require('enzyme');
+const Adapter = require('enzyme-adapter-react-16');
 
 enzyme.configure({ adapter: new Adapter() });
 
-var jsdom = require('jsdom').JSDOM;
-var chai = require('chai');
+const { JSDOM } = require('jsdom');
+const chai = require('chai');
 
 global.expect = chai.expect;
 global.assert = chai.assert;
 
-var exposedProperties = ['window', 'navigator', 'document'];
-var dom = new jsdom('');
+const exposedProperties = ['window', 'navigator', 'document'];
+const dom = new JSDOM('', {
+  url: 'https://example.org/',
+  referrer: 'https://example.com/',
+  contentType: 'text/html',
+  includeNodeLocations: true,
+  pretendToBeVisual: true,
+  storageQuota: 10000000,
+});
 function matchMedia() {
   return {
-    matches : false,
-    addListener : function() {},
-    removeListener: function() {}
+    matches: false,
+    addListener: () => {
+      /* do nothing */
+    },
+    removeListener: () => {
+      /* do nothing */
+    },
   };
 }
 function emptyFunction() {}
@@ -36,25 +47,37 @@ global.window.matchMedia = matchMedia;
 global.window.sessionStorage = { getItem: emptyFunction, setItem: emptyFunction };
 global.window.localStorage = { getItem: emptyFunction, setItem: emptyFunction };
 global.document.execCommand = () => {
-  //do nothing
+  // do nothing
 };
 global.window.requestAnimationFrame = () => {
-  //do nothing
+  // do nothing
 };
 
-Object.keys(document.window).forEach((property) => {
+Object.keys(document.window).forEach(property => {
   if (typeof global[property] === 'undefined') {
     exposedProperties.push(property);
     global[property] = document.window[property];
   }
 });
 
-global['Event'] = global['Event'] || function Event() { };
-global['Element'] = global['Element'] || function Element() { };
-global['HTMLDocument'] = global['HTMLDocument'] || function HTMLDocument() { };
+global.Event =
+  global.Event ||
+  function Event() {
+    /* do nothing */
+  };
+global.Element =
+  global.Element ||
+  function Element() {
+    /* do nothing */
+  };
+global.HTMLDocument =
+  global.HTMLDocument ||
+  function HTMLDocument() {
+    /* do nothing */
+  };
 
 global.navigator = {
-  userAgent: 'node.js'
+  userAgent: 'node.js',
 };
 
 function setDefaultValueToStorage(value = {}) {

@@ -1,6 +1,3 @@
-import React from 'react';
-import styled from 'styled-components';
-import uuid from 'uuid';
 import BounceTwistEffect from '../../DEV/BounceTwistEffect';
 import FadeEffect from '../../DEV/FadeEffect';
 import HingeEffect from '../../DEV/HingeEffect';

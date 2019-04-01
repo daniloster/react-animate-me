@@ -6,28 +6,17 @@ import AnimateProxy from './AnimateProxy';
 
 const { useEffect, useState } = React;
 
-export default React.memo(Animate);
-
 /**
  * Basic component to create animations/effects
- * @example ./Animate.md
  */
-function Animate(props) {
-  const {
-    children,
-    onComplete,
-    onStart,
-    ...otherProps,
-  } = props;
+const Animate = props => {
+  const { children, onComplete, onStart, ...otherProps } = props;
   const { animationName } = otherProps;
   const [style] = useAnimationStyle(props);
   const [iteractionAnimationId, setIteractionAnimationId] = useState(uuid.v4());
-  useEffect(
-    () => {
-      setIteractionAnimationId(uuid.v4());
-    },
-    [children]
-  );
+  useEffect(() => {
+    setIteractionAnimationId(uuid.v4());
+  }, [children]);
   const onCompleteAnimation = e => {
     if (e.animationName === animationName && onComplete) {
       onComplete(e);
@@ -50,7 +39,7 @@ function Animate(props) {
       {children}
     </AnimateProxy>
   );
-}
+};
 
 Animate.propTypes = {
   /**
@@ -103,11 +92,7 @@ Animate.propTypes = {
    */
   keyframes: PropTypes.arrayOf(
     PropTypes.shape({ state: PropTypes.string, content: PropTypes.string })
-  ),
-  /**
-   * Total of animations allow before being invalidated
-   */
-  maxAnimations: PropTypes.number,
+  ).isRequired,
   /**
    * Event triggered when animation is completed
    * @param {AnimationEvent} event - The native `AnimationEvent`
@@ -123,10 +108,9 @@ Animate.propTypes = {
    */
   target: PropTypes.string,
   /**
-   * The timing function applied to the animation e.g.
-   * linear, ease, ease-in, ease-in-out, ease-out,
-   * cubic-bezier(0.1, 0.7, 1.0, 0.1) and
-   * steps(number_of_steps, direction)
+   * The timing function applied to the animation e.g. linear,
+   * ease, ease-in, ease-in-out, ease-out, cubic-bezier(0.1, 0.7, 1.0, 0.1)
+   * and steps(number_of_steps, direction)
    * @see See [MDN timing-function](https://developer.mozilla.org/en-US/docs/Web/CSS/timing-function)
    */
   timingFunction: PropTypes.string,
@@ -143,10 +127,10 @@ Animate.defaultProps = {
   durationUnit: 's',
   fillMode: 'forwards',
   iterationCount: 1,
-  keyframes: [],
-  maxAnimations: Number.MAX_VALUE,
   onComplete: null,
   onStart: null,
   target: '&',
   timingFunction: 'ease-in',
 };
+
+export default React.memo(Animate);

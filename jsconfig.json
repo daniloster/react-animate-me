@@ -2,10 +2,6 @@
   "compilerOptions": {
     "experimentalDecorators": true
   },
-  "include": [
-      "packages/**/*"
-  ],
-  "exclude": [
-      "**/node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules"]
 }

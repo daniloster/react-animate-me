@@ -2,31 +2,32 @@ require('source-map-support').install({
   handleUncaughtExceptions: false,
   environment: 'node',
 });
-var path = require('path');
+const path = require('path');
+const registerBabel = require('@babel/register');
 
-require('babel-register')({
-  "babelrc": false,
-  "presets": [["es2015", { "modules": false }], "react", "stage-0"],
-  "plugins": [
-    "transform-es2015-modules-umd",
-    "transform-decorators-legacy",
-    "transform-runtime",
-    ["module-resolver", {
-      "root": [
-        path.resolve(process.cwd(), './node_modules'),
-        path.resolve(process.cwd(), '../../node_modules')
-      ]
-    }]
+registerBabel({
+  babelrc: false,
+  presets: ['@babel/preset-react', '@babel/preset-env'],
+  plugins: [
+    '@babel/plugin-syntax-dynamic-import',
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-export-namespace-from',
+    '@babel/plugin-proposal-throw-expressions',
+    ['styled-components', { ssr: true }],
+    '@babel/transform-runtime',
   ],
-  "ignore": function(filename) {
-    var isIgnored = (/packages\/((\w|\d|\-)+)\/dist\//.test(filename) || (/packages\/((\w|\d|\-)+)\/lib\//.test(filename) || /node_modules/.test(filename)));
-    return isIgnored;
+  ignore: [
+    filename => {
+      const isIgnored =
+        /dist\//.test(filename) || /lib\//.test(filename) || /node_modules/.test(filename);
+      return isIgnored;
+    },
+  ],
+  env: {
+    test: {
+      plugins: ['istanbul'],
+    },
   },
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
-    }
-  }
 });
-require('babel-polyfill');
-require('babel-regenerator-runtime');
+require('@babel/polyfill');
+// require('@babel/runtime');

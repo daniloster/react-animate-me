@@ -43,6 +43,7 @@ function parseData(data) {
 const fs = require('fs');
 const path = require('path');
 const handlebars = require('handlebars');
+require('./handlebarsExtensions');
 
 const currentDirProcess = process.cwd();
 
@@ -51,6 +52,29 @@ function buildDocs(data) {
   const templateText = fs.readFileSync(templatePath).toString();
   const template = handlebars.compile(templateText);
   fs.writeFileSync(`${currentDirProcess}/${argsMap['-o']}`, template(data));
+}
+
+function clearLinebreaks(text) {
+  return text.replace(new RegExp('\\n', 'i'), ' ');
+}
+
+function clearJsonData(data) {
+  let jsonData = {};
+  Object.keys(data).forEach(key => {
+    jsonData = Object.assign({}, jsonData, {
+      [key]: Object.assign({}, data[key], data[key] && data[key].description && {
+        description: clearLinebreaks(data[key].description),
+      }),
+    });
+
+    Object.keys(property => {
+      jsonData[key].props[property] = Object.assign({}, jsonData[key].props[property],
+      jsonData[key].props[property].description && {
+        description: clearLinebreaks(jsonData[key].props[property].description),
+      });
+    });
+  });
+  return jsonData;
 }
 
 const json = [];
@@ -62,8 +86,15 @@ process.stdin.on('readable', function() {
   }
 });
 
+
+
 process.stdin.on('end', function() {
-  const jsonText = json.join('');
-  const jsonData = JSON.parse(jsonText);
+  const jsonText = json.join('') || '{}';
+  // console.log(`
+  // \n\n\n\n\n\n
+  // ${jsonText}
+  // \n\n\n\n\n\n
+  // `);
+  const jsonData = JSON.parse(jsonText.replace(/\n/i, ' '));
   buildDocs(parseData(jsonData));
 });

@@ -4,7 +4,7 @@ const sourceMapLoader = {
   test: /\.jsx?$/,
   exclude: /node_modules/,
   enforce: 'pre',
-  loader: 'source-map-loader'
+  loader: 'source-map-loader',
 };
 const babelLoader = {
   test: /\.jsx?$/,
@@ -12,29 +12,45 @@ const babelLoader = {
   loader: 'babel-loader',
   query: {
     babelrc: false,
-    presets: ['react', ['es2015', { modules: false }], 'stage-0'],
-    plugins: ['transform-decorators-legacy', ['styled-components', { ssr: true }]]
-  }
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          modules: false,
+          useBuiltIns: 'usage',
+        },
+      ],
+      '@babel/preset-react',
+    ],
+    plugins: [
+      '@babel/plugin-syntax-dynamic-import',
+      '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-export-namespace-from',
+      '@babel/plugin-proposal-throw-expressions',
+      '@babel/transform-runtime',
+      ['styled-components', { ssr: true }],
+    ],
+  },
 };
 const htmlLoader = {
   test: /\.html$/,
   use: [
     {
       loader: 'html-loader',
-      options: { minimize: true }
-    }
-  ]
+      options: { minimize: true },
+    },
+  ],
 };
 
 module.exports = {
   devtool: 'source-map',
   module: {
-    rules: [sourceMapLoader, babelLoader, htmlLoader]
+    rules: [sourceMapLoader, babelLoader, htmlLoader],
   },
   plugins: [
     new HtmlWebPackPlugin({
       template: './tools/template/index.html',
-      filename: './index.html'
-    })
-  ]
+      filename: './index.html',
+    }),
+  ],
 };
